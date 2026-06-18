@@ -66,4 +66,184 @@
         }
         input {
             width: 100%;
-            padding: 12px
+            padding: 12px 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+        input:focus {
+            border-color: #11998e;
+            background-color: #fff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.15);
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, #11998e, #38ef7d);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(56, 239, 125, 0.3);
+        }
+        button:hover {
+            filter: brightness(1.05);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .footer-note {
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            margin-top: 20px;
+        }
+        
+        /* Telas de Loading e Sucesso */
+        .overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            z-index: 10;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #11998e;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        .success-icon {
+            font-size: 50px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-accent"></div>
+    
+    <div id="form-container">
+        <h1>Resgate de Cashback PJ</h1>
+        <p class="subtitle">Seja bem-vindo! Informe os dados da sua conta jurídica abaixo para iniciarmos a análise de valores a receber.</p>
+        
+        <form id="cashback-form" onsubmit="enviarFormulario(event)">
+            <div class="form-group">
+                <label for="nome">Nome do Responsável</label>
+                <input type="text" id="nome" required placeholder="Digite seu nome completo">
+            </div>
+            
+            <div class="form-group">
+                <label for="telefone">Telefone / WhatsApp</label>
+                <input type="text" id="telefone" required placeholder="(00) 00000-0000" maxlength="15" oninput="mascaraTelefone(this)">
+            </div>
+            
+            <div class="form-group">
+                <label for="cnpj">CNPJ da Empresa</label>
+                <input type="text" id="cnpj" required placeholder="00.000.000/0001-00" maxlength="18" oninput="mascaraCNPJ(this)">
+            </div>
+            
+            <div class="form-group">
+                <label for="renda">Renda / Faturamento Mensal</label>
+                <input type="text" id="renda" required placeholder="R$ 0,00" oninput="mascaraMoeda(this)">
+            </div>
+            
+            <button type="submit">Consultar Valores Disponíveis</button>
+        </form>
+        
+        <p class="footer-note">🔒 Seus dados corporativos estão protegidos de acordo com as normas da LGPD.</p>
+    </div>
+
+    <div id="loading-overlay" class="overlay">
+        <div class="spinner"></div>
+        <h2 style="font-size: 20px; margin-bottom: 10px;">Analisando sua conta...</h2>
+        <p style="color: #666; font-size: 14px;">Aguarde, estamos verificando a existência de cashback disponível junto ao sistema.</p>
+    </div>
+
+    <div id="success-overlay" class="overlay">
+        <div class="success-icon">✓</div>
+        <h2 style="font-size: 20px; color: #111; margin-bottom: 10px;">Dados Enviados!</h2>
+        <p style="color: #444; font-size: 14px; line-height: 1.6;">
+            Obrigado, <strong id="user-name"></strong>. Nossa equipe recebeu sua solicitação. <br><br>
+            A análise do CNPJ <span id="user-cnpj" style="font-weight: 600;"></span> está sendo processada. 
+            Em instantes, entraremos em contato via WhatsApp para informar os valores que você tem a receber!
+        </p>
+    </div>
+</div>
+
+<script>
+    // Funções de Máscara (Formatação Automática)
+    function mascaraTelefone(input) {
+        let v = input.value.replace(/\D/g, "");
+        v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+        v = v.replace(/(\d{5})(\d)/, "$1-$2");
+        input.value = v;
+    }
+
+    function mascaraCNPJ(input) {
+        let v = input.value.replace(/\D/g, "");
+        v = v.replace(/^(\d{2})(\d)/, "$1.$2");
+        v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
+        v = v.replace(/\.(\d{3})(\d)/, ".$1/$2");
+        v = v.replace(/(\d{4})(\d)/, "$1-$2");
+        input.value = v;
+    }
+
+    function mascaraMoeda(input) {
+        let v = input.value.replace(/\D/g, "");
+        v = (Number(v) / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        input.value = v;
+    }
+
+    // Lógica de Envio do Formulário
+    function enviarFormulario(event) {
+        event.preventDefault(); // Evita que a página recarregue
+        
+        // Captura os dados digitados
+        const nome = document.getElementById('nome').value;
+        const cnpj = document.getElementById('cnpj').value;
+        
+        // Passa o nome e o cnpj para a tela final de sucesso
+        document.getElementById('user-name').innerText = nome;
+        document.getElementById('user-cnpj').innerText = cnpj;
+
+        // Esconde o formulário e mostra o Loading
+        document.getElementById('form-container').style.display = 'none';
+        document.getElementById('loading-overlay').style.display = 'flex';
+
+        // Simula uma análise de 3 segundos antes de mostrar o resultado
+        setTimeout(() => {
+            document.getElementById('loading-overlay').style.display = 'none';
+            document.getElementById('success-overlay').style.display = 'flex';
+            
+            // Aqui você pode integrar com seu backend, CRM ou API do WhatsApp para receber os dados
+        }, 3500); 
+    }
+</script>
+
+</body>
+</html>
